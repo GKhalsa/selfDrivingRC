@@ -5,7 +5,7 @@ class PCA9685_Controller:
         # Initialize the PCA9685 using the default address (0x40).
         self.pwm = Adafruit_PCA9685.PCA9685()
 
-        self.pwm.set_pwm_frequency(frequency)
+        self.pwm.set_pwm_freq(frequency)
         self.channel = channel
 
     def set_pulse(self, pulse):
@@ -38,4 +38,40 @@ class PWMThrottleActuator:
 
         self.controller.set_pulse(throttle)
 
-    
+import sys, termios, tty, os, time
+
+def getch():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+button_delay = 0.2
+
+
+
+
+throttle_controller = PCA9685_Controller(channel = 0)    
+steering_controller = PCA9685_Controller(channel = 1)
+
+my_throttle = PWMThrottleActuator(controller = throttle_controller)
+my_steering = PWMSteeringActuator(controller = steering_controller)
+
+while True:
+    char = getch()
+
+    if(char == "a"):
+        my_steering.update(480)
+    elif(char == "d"):
+        my_steering.update(350)
+    elif(char == "w"):
+        my_throttle.update(200)
+    elif(char == "s"):
+        print("down")
+    elif(char == "x"):
+        break
+
