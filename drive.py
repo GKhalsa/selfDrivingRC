@@ -23,9 +23,19 @@ class PWMSteeringActuator:
 
     def update(self, angle):
 
-        self.controller.set_pulse(pulse)
+        self.controller.set_pulse(angle)
 
-#class PWMThrottleActuator:
-    
+class PWMThrottleActuator:
+
+    def __init__(self, controller=None, max_pulse=300, min_pulse=490, zero_pulse=350):
+        self.controller = controller
+        self.max_pulse = max_pulse
+        self.min_pulse = min_pulse
+        self.zero_pulse = zero_pulse
+        #self.calibrate()
+
+    def update(self, throttle):
+
+        self.controller.set_pulse(throttle)
 
     
