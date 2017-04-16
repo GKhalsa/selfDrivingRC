@@ -35,7 +35,7 @@ class PWMThrottleActuator:
         #self.calibrate()
 
     def update(self, throttle):
-
+        sys.stdout.flush()
         self.controller.set_pulse(throttle)
 
 import sys, termios, tty, os, time
@@ -61,17 +61,25 @@ steering_controller = PCA9685_Controller(channel = 1)
 my_throttle = PWMThrottleActuator(controller = throttle_controller)
 my_steering = PWMSteeringActuator(controller = steering_controller)
 
+counter = 0
 while True:
+    
     char = getch()
-
+    #throttle_controller.set_pulse(350)
     if(char == "a"):
         my_steering.update(480)
     elif(char == "d"):
         my_steering.update(350)
-    elif(char == "w"):
-        my_throttle.update(200)
+    elif(char == "w" and counter == 0):
+        print("char = w, counter = " + str(counter) + ", throttle = 370")
+        my_throttle.update(370)
+        counter += 1
+    elif(char == "w" and counter == 1):
+        print("char = w, counter = 1, throttle = 400")
+        my_throttle.update(400)
+        counter -= 1
     elif(char == "s"):
-        print("down")
+        my_steering.update(410)
     elif(char == "x"):
         break
 
